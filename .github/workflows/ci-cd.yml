@@ -30,7 +30,7 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/location-tracker-backend:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/location-tracker-backend:location-tracker-backend
 
       - name: Build and push frontend Docker image
         uses: docker/build-push-action@v3
@@ -38,7 +38,7 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/location-tracker-frontend:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/location-tracker-frontend:location-tracker-frontend
 
       - name: Deploy backend to Render
         run: |
