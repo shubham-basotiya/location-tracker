@@ -1,6 +1,6 @@
 #backend/Dockerfile
 
-FROM node:18.17.1 AS builder
+FROM node:18-bookworm-slim AS builder
 
 WORKDIR /app
 

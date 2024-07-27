@@ -26,6 +26,14 @@ const locationSchema = new mongoose.Schema({
 
 const Location = mongoose.model('Location', locationSchema);
 
+app.get('/savedMapPaths', async (req, res) => {
+    return res.send(await Location.find().sort({_id: -1}));
+})
+
+app.get('/pathCoordinates/:id', async(req, res) => {
+    return res.send(await Location.findById(req.params.id));
+})
+
 app.post('/start', (req, res) => {
     const newLocation = new Location({ name: req.body.name, coordinates: [] });
     newLocation.save().then(location => res.send(location));
