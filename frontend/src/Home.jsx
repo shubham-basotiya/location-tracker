@@ -1,33 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { Link} from 'react-router-dom';
 import axios from 'axios';
-import { MapContainer, TileLayer, Polyline, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Polyline, Marker, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import markerIconPng from "leaflet/dist/images/marker-icon.png"
+import {Icon} from 'leaflet'
 
 function Home(){
-
-    const [mapCenter, setMapCenter] = useState([0, 0]);
-    
-    // useEffect(() => {
-    //     navigator.geolocation.getCurrentPosition(
-    //         (position) => {
-    //             const { latitude, longitude } = position.coords;
-    //             setMapCenter([ latitude, longitude ]);
-    //         },
-    //         (error) => console.log(error.message),
-    //         { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 }
-    //     );
-    // },[]);
 
     const [tracking, setTracking] = useState(false);
     const [locationId, setLocationId] = useState(null);
     const [coordinates, setCoordinates] = useState([]);
     const [name, setName] = useState('');
     const [savedPathArrOfObjs, setSavedPathArrOfObjs] = useState([]);
+    const [mapCenter, setMapCenter] = useState([0, 0]);
 
-    const host = 'http://localhost:5000';//'https://currentlocationonmapbackend.onrender.com';
-
-
+    const host = 'https://currentlocationonmapbackend.onrender.com';//'http://localhost:5000';
+    
+    useEffect(() => {
+        // Function to get the current location
+        const getCurrentLocation = () => {
+          if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(
+              (position) => {
+                const { latitude, longitude } = position.coords;
+                setMapCenter([latitude, longitude]);
+              },
+              (error) => {
+                console.error("Error getting location: ", error);
+                alert("Error getting location: ", error.message);
+              },
+              { enableHighAccuracy: true, timeout: 10000 }
+            );
+          } else {
+            alert("Geolocation is not supported by this browser.");
+          }
+        };
+    
+        // Call the function to get the current location
+        getCurrentLocation();
+      }, []);
 
     useEffect( () => {
         async function fetchAllSavedMapPath(){
@@ -37,7 +49,7 @@ function Home(){
 
         fetchAllSavedMapPath();
         // console.log(savedPathArrOfObjs);
-    },[]);
+    },[coordinates]);
 
     useEffect(() => {
         let watchId;
@@ -57,7 +69,7 @@ function Home(){
                     setMapCenter([newCoordinate.latitude, newCoordinate.longitude]);
                 },
                 (error) => console.log(error),
-                { enableHighAccuracy: true, maximumAge: 1000, timeout: 1000 }
+                { enableHighAccuracy: true, maximumAge: 10000, timeout: 10000 }
             );
         } else {
             if (watchId) navigator.geolocation.clearWatch(watchId);
@@ -69,6 +81,7 @@ function Home(){
     }, [tracking]);
 
     const startTracking = async () => {
+        // setStartPos(false);
         if (name.trim() === '') {
             alert('Please enter a track name.');
             return;
@@ -84,37 +97,6 @@ function Home(){
         setCoordinates([]);
         setName('');
     };
-
-    function LocationMarker() {
-        // const [position, setPosition] = useState(null);
-        // const [bbox, setBbox] = useState([]);
-    
-        const map = useMap();
-    
-        useEffect(() => {
-          map.locate().on("locationfound", function (e) {
-            setMapCenter(e.latlng);
-            map.flyTo(e.latlng, map.getZoom());
-            // const radius = e.accuracy;
-            // const circle = L.circle(e.latlng, radius);
-            // circle.addTo(map);
-            // setBbox(e.bounds.toBBoxString().split(","));
-          });
-        }, [map]);
-    
-        // return position === null ? null : (
-        //   <Marker position={position} icon={icon}>
-            // <Popup>
-            //   You are here. <br />
-            //   Map bbox: <br />
-            //   <b>Southwest lng</b>: {bbox[0]} <br />
-            //   <b>Southwest lat</b>: {bbox[1]} <br />
-            //   <b>Northeast lng</b>: {bbox[2]} <br />
-            //   <b>Northeast lat</b>: {bbox[3]}
-            // </Popup>
-        //   </Marker>
-        // );
-      }
 
     return (
         <div>
@@ -132,15 +114,13 @@ function Home(){
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 />
+                    <Marker position={mapCenter} icon={new Icon({iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41]})} />
+                    <UpdateMapView coords={mapCenter} />
                 {coordinates.length > 0 && (
                     <Polyline
                         positions={coordinates.map(coord => [coord.latitude, coord.longitude])}
                         color="blue"
                     />
-                )}
-
-                {coordinates.lenth === 0 && (
-                    <LocationMarker />
                 )}
             </MapContainer>
             <div>    
@@ -158,5 +138,13 @@ function Home(){
         </div>
     );
 }
+
+const UpdateMapView = ({ coords }) => {
+    const map = useMap();
+    useEffect(() => {
+      map.setView(coords);
+    }, [coords, map]);
+    return null;
+  };
 
 export default Home;
