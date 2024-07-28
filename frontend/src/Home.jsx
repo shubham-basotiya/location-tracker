@@ -30,7 +30,7 @@ function Home(){
                 console.error("Error getting location: ", error);
                 alert("Error getting location: ", error.message);
               },
-              { enableHighAccuracy: true, timeout: 10000 }
+              { enableHighAccuracy: true, maximumAge: 10000, timeout: 10000 }
             );
           } else {
             alert("Geolocation is not supported by this browser.");
@@ -98,6 +98,11 @@ function Home(){
         setName('');
     };
 
+    const handleDelete = async (host, locationId) => {
+        const res = await axios.delete(`${host}/delete/${locationId}`);
+        alert(res.data.name + "deleted successfully");
+    }
+
     return (
         <div>
             <input
@@ -131,6 +136,7 @@ function Home(){
                         <Link to={`/path/${pathObj._id}`}>
                         {pathObj.name}
                         </Link>
+                        <button onClick={() => handleDelete(host, pathObj._id)}>Delete</button>
                     </li>
                     ))}
                 </ul>

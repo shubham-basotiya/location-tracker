@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Polyline, Marker, useMap } from 'react-leaflet
 import 'leaflet/dist/leaflet.css';
 import markerIconPng from "leaflet/dist/images/marker-icon.png"
 import {Icon} from 'leaflet'
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 
 function PathOnMap() {
@@ -12,6 +12,7 @@ function PathOnMap() {
     const [coordinates, setCoordinates] = useState([]);
     const [pathName, setPathName] = useState('');
     const [mapCenter, setMapCenter] = useState([0, 0]);
+    const [savedPathArrOfObjs, setSavedPathArrOfObjs] = useState([]);
 
     const host = 'https://currentlocationonmapbackend.onrender.com';//'http://localhost:5000';
 
@@ -37,6 +38,7 @@ function PathOnMap() {
       // Call the function to get the current location
       getCurrentLocation();
     }, []);
+  
 
     useEffect(() => {
       const fetchCoordinates = async () => {
@@ -51,6 +53,21 @@ function PathOnMap() {
   
       fetchCoordinates();
     }, [id]);
+
+    useEffect( () => {
+      async function fetchAllSavedMapPath(){
+          const allsavedPaths = await axios.get(`${host}/savedMapPaths`);
+          setSavedPathArrOfObjs(allsavedPaths.data);
+      }
+
+      fetchAllSavedMapPath();
+      // console.log(savedPathArrOfObjs);
+  },[coordinates]);
+
+  const handleDelete = async (host, locationId) => {
+      const res = await axios.delete(`${host}/delete/${locationId}`);
+      alert(res.data.name + "deleted successfully");
+  }
 
     return (
         <div>
@@ -71,6 +88,19 @@ function PathOnMap() {
                   )}
                 {coordinates.length > 0 && ( <Marker position={[coordinates[coordinates.length - 1].latitude, coordinates[coordinates.length - 1].longitude]} icon={new Icon({iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41]})} /> )}
             </MapContainer>
+            <div>    
+                <ul>
+                    {savedPathArrOfObjs.map((pathObj) => (
+                    <li key={pathObj._id}>
+                        {/* Pass the id and coordinates as props */}
+                        <Link to={`/path/${pathObj._id}`}>
+                        {pathObj.name}
+                        </Link>
+                        <button onClick={() => handleDelete(host, pathObj._id)}>Delete</button>
+                    </li>
+                    ))}
+                </ul>
+            </div>
         </div>
     );
 }

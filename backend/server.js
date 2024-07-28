@@ -47,6 +47,16 @@ app.post('/stop/:id', (req, res) => {
     ).then(location => res.send(location));
 });
 
+app.delete('/stop/:id', async (req, res) => {
+    Location.findByIdAndDelete(req.params.id, (err, doc) => {
+        if (err) {
+          res.send(err.message);
+        } else {
+          res.send(doc);
+        }
+    });
+})
+
 app.listen(5000, () => {
     console.log('Server is running on port 5000');
 });
