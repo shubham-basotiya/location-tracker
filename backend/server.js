@@ -48,13 +48,16 @@ app.post('/stop/:id', (req, res) => {
 });
 
 app.delete('/delete/:id', async (req, res) => {
-    Location.findByIdAndDelete(req.params.id, (err, doc) => {
-        if (err) {
-          res.send(err.message);
+    try {
+        const doc = await Location.findByIdAndDelete(req.params.id);
+        if (doc) {
+            res.send(doc);
         } else {
-          res.send(doc);
+            console.log('No document found with that ID.');
         }
-    });
+    } catch (err) {
+        console.error('Error deleting document:', err);
+    }
 })
 
 app.listen(5000, () => {
