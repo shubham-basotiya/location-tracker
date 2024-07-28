@@ -47,7 +47,7 @@ app.post('/stop/:id', (req, res) => {
     ).then(location => res.send(location));
 });
 
-app.delete('/stop/:id', async (req, res) => {
+app.delete('/delete/:id', async (req, res) => {
     Location.findByIdAndDelete(req.params.id, (err, doc) => {
         if (err) {
           res.send(err.message);
