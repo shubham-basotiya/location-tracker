@@ -9,7 +9,7 @@ function App() {
                 <Routes>
                     {/* Define the route with a parameter */}
                     <Route
-                    path='/path/:id' element={<PathOnMap />}
+                    path='/path/:id?' element={<PathOnMap />}
                     />
                     <Route path="/" exact element={<Home />} />
                 </Routes>

@@ -56,7 +56,7 @@ app.delete('/delete/:id', async (req, res) => {
             console.log('No document found with that ID.');
         }
     } catch (err) {
-        console.error('Error deleting document:', err);
+        console.log('Error deleting document:', err);
     }
 })
 

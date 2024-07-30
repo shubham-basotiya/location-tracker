@@ -15,6 +15,8 @@ function Home(){
     const [savedPathArrOfObjs, setSavedPathArrOfObjs] = useState([]);
     const [mapCenter, setMapCenter] = useState([0, 0]);
 
+    const buttonClass = "list-group-item";
+
     const host = 'https://currentlocationonmapbackend.onrender.com';//'http://localhost:5000';
     
     useEffect(() => {
@@ -28,7 +30,7 @@ function Home(){
               },
               (error) => {
                 console.error("Error getting location: ", error);
-                alert("Error getting location: ", error.message);
+                // alert("Error getting location: ", error.message);
               },
               { enableHighAccuracy: true, maximumAge: 10000, timeout: 10000 }
             );
@@ -128,15 +130,15 @@ function Home(){
                     />
                 )}
             </MapContainer>
-            <div>    
-                <ul>
+            <div className='container' style={{marginTop: "30px", marginBottom: "30px"}}>    
+                <ul className='list-group align-items-center'>
                     {savedPathArrOfObjs.map((pathObj) => (
-                    <li key={pathObj._id}>
+                    <li key={pathObj._id} className={`${buttonClass} w-50 d-flex align-items-center`} >
                         {/* Pass the id and coordinates as props */}
-                        <Link to={`/path/${pathObj._id}`}>
+                        <Link to={`/path/${pathObj._id}`} className={`${buttonClass} active w-50`} >
                         {pathObj.name}
                         </Link>
-                        <button onClick={() => handleDelete(host, pathObj._id)}>Delete</button>
+                        <button className="list-group-item list-group-item-action w-50 text-center" onClick={() => handleDelete(host, pathObj._id)}>Delete</button>
                     </li>
                     ))}
                 </ul>
