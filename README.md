@@ -1,6 +1,6 @@
 Current Location On Map (https://currentlocationonmap.onrender.com/)
 
-!https://currentlocationonmap.onrender.com/([https://drive.google.com/file/d/1I3PZdtuIPaziqBwlKVu1bLkrQx1B1Ms8/view])
+!currentlocationonmap(https://drive.google.com/file/d/1I3PZdtuIPaziqBwlKVu1bLkrQx1B1Ms8/view)
 
 
 I made this project for remembering routes on map you travelled.
