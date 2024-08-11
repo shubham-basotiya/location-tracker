@@ -1,6 +1,6 @@
 Current Location On Map (https://currentlocationonmap.onrender.com/)
 
-!currentlocationonmap(https://github.com/shubham-basotiya/location-tracker/blob/main/currentlocationonmap.png)
+![currentlocationonmap](https://github.com/shubham-basotiya/location-tracker/blob/main/currentlocationonmap.png)
 
 
 I made this project for remembering routes on map you travelled.
